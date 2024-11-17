@@ -1,12 +1,21 @@
-- 👋 Hi, I’m @Dogeshib2170
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
-<!---
-Dogeshib2170/Dogeshib2170 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+describe("Storage", function () {
+  it("test initial value", async function () {
+    const Storage = await ethers.getContractFactory("Storage");
+    const storage = await Storage.deploy();
+    await storage.deployed();
+    console.log("storage deployed at:" + storage.address);
+    expect((await storage.retrieve()).toNumber()).to.equal(0);
+  });
+  it("test updating and retrieving updated value", async function () {
+    const Storage = await ethers.getContractFactory("Storage");
+    const storage = await Storage.deploy();
+    await storage.deployed();
+    const storage2 = await ethers.getContractAt("Storage", storage.address);
+    const setValue = await storage2.store(56);
+    await setValue.wait();
+    expect((await storage2.retrieve()).toNumber()).to.equal(56);
+  });
+});
